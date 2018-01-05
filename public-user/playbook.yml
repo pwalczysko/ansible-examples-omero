@@ -147,10 +147,47 @@
       notify:
       - restart omero-web
 
+    - name: Add facility manager operating system users
+      become: true
+      user:
+       name: "{{ item }}"
+       state: present
+       groups: "{{ omero_server_system_managedrepo_group }}"
+       password: "{{ os_system_users_password }}"
+      with_items: "{{ os_system_users_to_be_added }}"
+
+    - name: Add DropBox folders for fm1 and fm2
+      become: true
+      file:
+        path: /home/DropBox/{{ item }}
+        state: directory
+        mode: 0755
+        owner: "{{ item }}"
+        group: "{{ item }}"
+      with_sequence: start=1 end=2 format=fm%d
+
+    - name: Allow managed repo group to login
+      become: yes
+      lineinfile:
+        path: /etc/security/access.conf
+        regexp: "{{ omero_server_system_managedrepo_group }}"
+        insertbefore: BOF
+        line: "+:{{ omero_server_system_managedrepo_group }}:ALL"
+
   vars:
-    omero_web_public_password: public
     omero_server_config_set:
+      #omero.fs.importUsers: "fm1"
+      omero.fs.watchDir: "/home/DropBox"
       omero.db.poolsize: 50
       omero.jvmcfg.percent.blitz: 50
       omero.jvmcfg.percent.indexer: 20
       omero.jvmcfg.percent.pixeldata: 20
+    #omero_server_datadir_chown: True
+    omero_server_system_managedrepo_group: managed_repo_group
+    omero_server_datadir_managedrepo_mode: u=rwX,g=srwX,o=rX,+t
+    omero_server_datadir_chown: True
+    os_system_users_password: "$6$leKi5B1PgSvdA/ec$xbU3CnoSFnYdeZjEjKK5TH8SGATsW746uopssff4edpgyu.cWXGo9A.oK6wH9kIkxLCCNcORGZnnroZPMqGzN/"
+    os_system_users_to_be_added:
+    - fm1
+    - fm2
+
