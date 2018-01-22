@@ -15,6 +15,9 @@
 - name: openmicroscopy.omero-web
   version: 1.0.0-m3
 
+- name: openmicroscopy.docker
+  version: 2.2.0 
+
 - name: omero-user
   src:  https://github.com/openmicroscopy/ansible-role-omero-user.git
   # TODO: workaround for missing owner
