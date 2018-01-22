@@ -64,6 +64,14 @@
       notify:
         - restart omero-web
 
+    - name: Omero.cli plugins | plugin install via pip & pypi
+      become: yes
+      pip:
+        name:
+        - "omero-cli-duplicate==0.2.0"
+        - "omero-cli-render==0.1.0"
+        state: present
+
     - name: Create a figure scripts directory
       become: yes
       file:
@@ -106,22 +114,12 @@
     - name: Add DropBox folder for trainer-1
       become: yes
       file:
-        path: /OMERO/DropBox/trainer-1
+        path: /home/DropBox/trainer-1
         state: directory
         mode: 0755
         recurse: yes
         owner: "omero-server"
         group: "omero-server"
-
-    - name: Add DropBox folders for user-1 to user-40
-      become: true
-      file:
-        path: /OMERO/DropBox/{{ item }}
-        state: directory
-        mode: 0775
-        owner: "omero-server"
-        group: "omero-server"
-      with_sequence: start=1 end=40 format=user-%d
 
     # Config for OMERO.web plugins, loaded into OMERO.web by the
     # omero.web systemd restart.
@@ -154,9 +152,9 @@
        state: present
        groups: "{{ omero_server_system_managedrepo_group }}"
        password: "{{ os_system_users_password }}"
-      with_items: "{{ os_system_users_to_be_added }}"
+      with_sequence: start=1 end=40 format=fm%d
 
-    - name: Add DropBox folders for fm1 and fm2
+    - name: Add DropBox folders for fm1 through fm40
       become: true
       file:
         path: /home/DropBox/{{ item }}
@@ -164,7 +162,7 @@
         mode: 0755
         owner: "{{ item }}"
         group: "{{ item }}"
-      with_sequence: start=1 end=2 format=fm%d
+      with_sequence: start=1 end=40 format=fm%d
 
     - name: Allow managed repo group to login
       become: yes
