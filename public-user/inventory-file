@@ -6,4 +6,4 @@
 # training-server.openmicroscopy.org
 
 [outreach]
-ome-training-outreach.openmicroscopy.org ansible_host=10.0.17.60
+ome-training-outreach.openmicroscopy.org
