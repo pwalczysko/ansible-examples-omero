@@ -28,6 +28,14 @@
         - mencoder
         - scipy
 
+    - name: Prerequisites for ldap
+      become: yes
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - openldap-clients
+
   roles:
 
     - role: openmicroscopy.postgresql
