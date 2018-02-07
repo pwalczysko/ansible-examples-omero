@@ -37,6 +37,7 @@
         - openldap-clients
         - python-virtualenv
         - gcc
+        - python-ldap
 
   roles:
 
@@ -86,14 +87,14 @@
         - "docker-py"
         state: present
 
-    - name: Install python-ldap
-      become: yes
-      pip:
-        name:
-        - "python-ldap"
-        state: present
-        virtualenv: "/home/ldap-venv"
-        virtualenv_site_packages: yes
+    #- name: Install python-ldap
+     # become: yes
+     # pip:
+      #  name:
+      #  - "python-ldap"
+      #  state: present
+      #  virtualenv: "/home/ldap-venv"
+      #  virtualenv_site_packages: yes
 
     - name: Create a figure scripts directory
       become: yes
